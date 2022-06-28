@@ -1,0 +1,174 @@
+openapi: 3.0.1
+info:
+  title: BC Zombie Apocalypse
+  description: Apocalypse Now!
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://bc-apocalypsis.swagger.io/v2
+tags:
+  - name: Scenario
+    description: Simulation scenarios for the apocalypse
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+paths:
+  /scenario:
+    post:
+      tags:
+        - Scenario
+      summary: Creates a new simulation Scenario
+      operationId: createScenario
+      requestBody:
+        description: Scenario to be stored
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateScenarioRequest'
+        required: true
+      responses:
+        '201':
+          description: Created Scenario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+      x-codegen-request-body-name: body
+  /scenario/{id}:
+    get:
+      tags:
+        - Scenario
+      summary: Get an existing Scenario
+      operationId: getScenario
+      parameters:
+        - name: id
+          in: path
+          description: ID of Scenario to get
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Scenario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+        '404':
+          description: Scenario not found
+          content: {}
+  /scenario/{id}/run:
+    put:
+      tags:
+        - Scenario
+      summary: Run an existing Scenario
+      operationId: runScenario
+      parameters:
+        - name: id
+          in: path
+          description: ID of Scenario to run
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Request for running a Scenario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunScenarioRequest'
+        required: true
+      responses:
+        '200':
+          description: Scenario after run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+        '404':
+          description: Scenario not found
+          content: {}
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    Item:
+      required:
+        - class
+      type: object
+      properties:
+        class:
+          type: string
+    Person:
+      required:
+        - items
+        - name
+        - status
+        - x
+        - 'y'
+      type: object
+      properties:
+        name:
+          type: string
+        x:
+          type: integer
+          description: Horizontal position
+          format: int32
+        'y':
+          type: integer
+          description: Vertical position
+          format: int32
+        status:
+          type: string
+          enum:
+            - alive
+            - zombie
+            - dead
+        items:
+          type: array
+          description: Inventory, it may contain any number of items (guns, knives, etc...)
+          items:
+            $ref: '#/components/schemas/Item'
+    CreateScenarioRequest:
+      required:
+        - id
+        - people
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+    Scenario:
+      required:
+        - completed
+        - id
+        - people
+        - time
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        time:
+          type: integer
+          format: int64
+          default: 0
+        completed:
+          type: boolean
+          default: false
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+    RunScenarioRequest:
+      type: object
+      properties:
+        time:
+          type: integer
+          format: int64
