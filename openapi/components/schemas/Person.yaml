@@ -1,0 +1,29 @@
+required:
+  - items
+  - name
+  - status
+  - x
+  - 'y'
+type: object
+properties:
+  name:
+    type: string
+  x:
+    type: integer
+    description: Horizontal position
+    format: int32
+  'y':
+    type: integer
+    description: Vertical position
+    format: int32
+  status:
+    type: string
+    enum:
+      - alive
+      - zombie
+      - dead
+  items:
+    type: array
+    description: 'Inventory, it may contain any number of items (guns, knives, etc...)'
+    items:
+      $ref: ./Item.yaml

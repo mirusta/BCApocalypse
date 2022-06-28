@@ -1,0 +1,23 @@
+get:
+  tags:
+    - Scenario
+  summary: Get an existing Scenario
+  operationId: getScenario
+  parameters:
+    - name: id
+      in: path
+      description: ID of Scenario to get
+      required: true
+      schema:
+        type: integer
+        format: int64
+  responses:
+    '200':
+      description: Scenario
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Scenario.yaml
+    '404':
+      description: Scenario not found
+      content: {}

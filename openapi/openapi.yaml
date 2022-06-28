@@ -1,0 +1,23 @@
+openapi: 3.0.1
+info:
+  title: BC Zombie Apocalypse
+  description: Apocalypse Now!
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
+servers:
+  - url: 'https://bc-apocalypsis.swagger.io/v2'
+tags:
+  - name: Scenario
+    description: Simulation scenarios for the apocalypse
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+paths:
+  /scenario:
+    $ref: paths/scenario.yaml
+  '/scenario/{id}':
+    $ref: 'paths/scenario@{id}.yaml'
+  '/scenario/{id}/run':
+    $ref: 'paths/scenario@{id}@run.yaml'

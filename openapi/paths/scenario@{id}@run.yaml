@@ -1,0 +1,31 @@
+put:
+  tags:
+    - Scenario
+  summary: Run an existing Scenario
+  operationId: runScenario
+  parameters:
+    - name: id
+      in: path
+      description: ID of Scenario to run
+      required: true
+      schema:
+        type: integer
+        format: int64
+  requestBody:
+    description: Request for running a Scenario
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/RunScenarioRequest.yaml
+    required: true
+  responses:
+    '200':
+      description: Scenario after run
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Scenario.yaml
+    '404':
+      description: Scenario not found
+      content: {}
+  x-codegen-request-body-name: body

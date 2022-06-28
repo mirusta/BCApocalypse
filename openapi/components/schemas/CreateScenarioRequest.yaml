@@ -1,0 +1,12 @@
+required:
+  - id
+  - people
+type: object
+properties:
+  id:
+    type: integer
+    format: int64
+  people:
+    type: array
+    items:
+      $ref: ./Person.yaml

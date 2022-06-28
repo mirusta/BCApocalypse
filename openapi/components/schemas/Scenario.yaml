@@ -1,0 +1,21 @@
+required:
+  - completed
+  - id
+  - people
+  - time
+type: object
+properties:
+  id:
+    type: integer
+    format: int64
+  time:
+    type: integer
+    format: int64
+    default: 0
+  completed:
+    type: boolean
+    default: false
+  people:
+    type: array
+    items:
+      $ref: ./Person.yaml

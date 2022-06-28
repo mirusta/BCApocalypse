@@ -1,0 +1,20 @@
+post:
+  tags:
+    - Scenario
+  summary: Creates a new simulation Scenario
+  operationId: createScenario
+  requestBody:
+    description: Scenario to be stored
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/CreateScenarioRequest.yaml
+    required: true
+  responses:
+    '201':
+      description: Created Scenario
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Scenario.yaml
+  x-codegen-request-body-name: body
