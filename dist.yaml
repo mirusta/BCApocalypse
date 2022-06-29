@@ -7,18 +7,18 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-  - url: https://bc-apocalypsis.swagger.io/v2
+- url: https://bc-apocalypsis.swagger.io/v2
 tags:
-  - name: Scenario
-    description: Simulation scenarios for the apocalypse
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io
+- name: Scenario
+  description: Simulation scenarios for the apocalypse
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
 paths:
   /scenario:
     post:
       tags:
-        - Scenario
+      - Scenario
       summary: Creates a new simulation Scenario
       operationId: createScenario
       requestBody:
@@ -29,7 +29,7 @@ paths:
               $ref: '#/components/schemas/CreateScenarioRequest'
         required: true
       responses:
-        '201':
+        201:
           description: Created Scenario
           content:
             application/json:
@@ -39,41 +39,40 @@ paths:
   /scenario/{id}:
     get:
       tags:
-        - Scenario
+      - Scenario
       summary: Get an existing Scenario
       operationId: getScenario
       parameters:
-        - name: id
-          in: path
-          description: ID of Scenario to get
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id
+        in: path
+        description: ID of Scenario to get
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
-        '200':
+        200:
           description: Scenario
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Scenario'
-        '404':
+        404:
           description: Scenario not found
           content: {}
-  /scenario/{id}/run:
     put:
       tags:
-        - Scenario
+      - Scenario
       summary: Run an existing Scenario
       operationId: runScenario
       parameters:
-        - name: id
-          in: path
-          description: ID of Scenario to run
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id
+        in: path
+        description: ID of Scenario to run
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         description: Request for running a Scenario
         content:
@@ -82,32 +81,82 @@ paths:
               $ref: '#/components/schemas/RunScenarioRequest'
         required: true
       responses:
-        '200':
+        200:
           description: Scenario after run
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Scenario'
-        '404':
+              example:
+                id: 45
+                time: 5
+                completed: true
+                people:
+                  - name: 'Jeff'
+                    x: 1
+                    y: -1
+                    status: zombie
+                    items:
+                      - class: gun
+                        ammo: 2
+                      - class: knife
+                  - name: 'Fede'
+                    x: 1
+                    y: 2
+                    status: zombie
+                  - name: 'Bellini'
+                    x: 1
+                    y: 0
+                    status: dead
+                  - name: 'Peluca'
+                    x: 1
+                    y: -1
+                    status: zombie
+                    items:
+                      - class: gun
+                        ammo: 2
+        404:
           description: Scenario not found
           content: {}
       x-codegen-request-body-name: body
 components:
   schemas:
     Item:
+      oneOf:
+        - $ref: '#/components/schemas/Gun'
+        - $ref: '#/components/schemas/Knife'
+    Gun:
       required:
-        - class
-      type: object
+      - class
+      - ammo
       properties:
         class:
           type: string
+          enum:
+            - gun
+        ammo:
+          type: integer
+          description: Bullets remaining
+          format: int32
+      example:
+        class: gun
+        ammo: 5
+    Knife:
+      required:
+      - class
+      properties:
+       class:
+        type: string
+        enum:
+          - knife
+      example:
+        class: knife
     Person:
       required:
-        - items
-        - name
-        - status
-        - x
-        - 'y'
+      - name
+      - status
+      - x
+      - y
       type: object
       properties:
         name:
@@ -116,40 +165,37 @@ components:
           type: integer
           description: Horizontal position
           format: int32
-        'y':
+        y:
           type: integer
           description: Vertical position
           format: int32
         status:
           type: string
           enum:
-            - alive
-            - zombie
-            - dead
+          - alive
+          - zombie
+          - dead
         items:
           type: array
-          description: Inventory, it may contain any number of items (guns, knives, etc...)
+          description: Inventory, it may contain any number of items (guns, knives,
+            etc...)
           items:
             $ref: '#/components/schemas/Item'
-    CreateScenarioRequest:
-      required:
-        - id
-        - people
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        people:
-          type: array
-          items:
-            $ref: '#/components/schemas/Person'
+      example:
+        name: 'Jeff'
+        x: 4
+        y: 3
+        status: alive
+        items:
+          - class: gun
+            ammo: 2
+          - class: knife
     Scenario:
       required:
-        - completed
-        - id
-        - people
-        - time
+      - completed
+      - id
+      - people
+      - time
       type: object
       properties:
         id:
@@ -166,9 +212,80 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Person'
-    RunScenarioRequest:
+      example:
+        id: 45
+        time: 0
+        completed: false
+        people:
+          - name: 'Jeff'
+            x: 4
+            y: 3
+            status: alive
+            items:
+              - class: gun
+                ammo: 2
+              - class: knife
+          - name: 'Fede'
+            x: -1
+            y: 5
+            status: zombie
+          - name: 'Bellini'
+            x: 1
+            y: 1
+            status: zombie
+          - name: 'Peluca'
+            x: 0
+            y: -2
+            status: alive
+            items:
+              - class: gun
+                ammo: 3
+    CreateScenarioRequest:
+      required:
+      - id
+      - people
       type: object
       properties:
-        time:
+        id:
           type: integer
           format: int64
+        people:
+          type: array
+          items:
+            $ref: '#/components/schemas/Person'
+      example:
+        id: 45
+        people:
+          - name: 'Jeff'
+            x: 4
+            y: 3
+            status: alive
+            items:
+              - class: gun
+                ammo: 2
+              - class: knife
+          - name: 'Fede'
+            x: -1
+            y: 5
+            status: zombie
+          - name: 'Bellini'
+            x: 1
+            y: 1
+            status: zombie
+          - name: 'Peluca'
+            x: 0
+            y: -2
+            status: alive
+            items:
+              - class: gun
+                ammo: 3
+    RunScenarioRequest:
+      required:
+      - completed
+      type: object
+      properties:
+        completed:
+          type: boolean
+          format: 'true'
+      example:
+        completed: true
